@@ -1,0 +1,227 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "457aeb27-be55-42b7-9c1e-b609a8f1c00a",
+      "name": "When chat message received",
+      "webhookId": "766bc508-119f-405d-b859-8f6b7d117110"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# ROLE\nSos el agente comercial de Treno Studio Digital.\n\n# SCOPE\nAtendés consultas iniciales de potenciales clientes relacionadas con los servicios de Treno:\n- Estrategia y contenido digital\n- Desarrollo web\n- Diseño UX/UI y prototipado\n- Automatizaciones con IA\n\n# OBJECTIVE\nTu objetivo es comprender la consulta del usuario, identificar qué servicio de Treno está relacionado y brindar una respuesta inicial clara y breve.\n\nCuando corresponda, utilizá las herramientas disponibles para realizar las acciones permitidas.\n\n# RULES\n- Respondé únicamente sobre consultas relacionadas con Treno y sus servicios.\n- No inventes precios, plazos, disponibilidad ni condiciones comerciales que no estén disponibles en el contexto o en tus herramientas.\n- No confirmes contrataciones ni compromisos comerciales.\n- Utilizá una herramienta solamente cuando la consulta requiera la función específica descripta por esa herramienta.\n- Si podés resolver la consulta directamente con la información disponible, respondé sin utilizar herramientas.\n- No utilices lenguaje inclusivo con terminaciones como \"e\", \"x\" o \"@\".\n\n# ESCALATION\nSi la consulta requiere una decisión comercial, presupuesto personalizado, información que no tenés disponible o una acción fuera de tus permisos, indicá que requiere revisión humana.",
+          "maxIterations": 7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "88ea8254-8537-4307-a5f8-e2cecd6e134b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        96,
+        208
+      ],
+      "id": "7f47d7cd-1800-44b2-873d-5a74e5340abd",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "WK0qahC4rISzcP69",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "treno.studiodigital@gmail.com",
+        "subject": "Treno Automation II | Log de ejecución",
+        "message": "=Consulta recibida: {{ $('When chat message received').item.json.chatInput }}  \nRespuesta del agente: {{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        0
+      ],
+      "id": "efb4f962-864e-40b3-b6e4-3babf08e22b0",
+      "name": "Send a message",
+      "webhookId": "74c56993-fabb-4c4c-a872-871441b5ec5e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tYi04EeTqA7DMXgf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Registra consultas comerciales de potenciales clientes de Treno Studio Digital que requieren seguimiento o revisión humana. Utiliza esta herramienta cuando el usuario manifieste interés concreto en contratar un servicio, solicite presupuesto, cotización, reunión, contacto o presente una necesidad comercial que requiera seguimiento. No utilices esta herramienta para preguntas generales sobre Treno o sus servicios que puedan responderse directamente.",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17Q38iEbvrfGg_nh5gC55GRYZPFjMXSp07cd1GnL5Fmw",
+          "mode": "list",
+          "cachedResultName": "Consultas treno - automation 2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Q38iEbvrfGg_nh5gC55GRYZPFjMXSp07cd1GnL5Fmw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Q38iEbvrfGg_nh5gC55GRYZPFjMXSp07cd1GnL5Fmw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha', ``, 'string') }}",
+            "Consulta": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Consulta', ``, 'string') }}",
+            "Servicio": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Servicio', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Consulta",
+              "displayName": "Consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Servicio",
+              "displayName": "Servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Requiere_Revision",
+              "displayName": "Requiere_Revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        208
+      ],
+      "id": "4b7cc0b3-4153-4143-b65d-c74f384eb61f",
+      "name": "Registrar_consulta",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9lVwuxTFNi3YUWl8",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar_consulta": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6f725953-438b-4501-a9ce-c2f6fec82e7f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "18bd691bd504dcf5ada0b4695ad96b06d643b99d4cb5bbe9423c910d5bbd5e61"
+  },
+  "nodeGroups": [],
+  "id": "St27l0osByo6IZWd",
+  "tags": []
+}
